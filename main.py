@@ -34,3 +34,6 @@ payload = {
 
 response = requests.post(url, headers=headers, json=payload)
 print(response.text)
+print(response.status_code)
+print(response.headers)
+
