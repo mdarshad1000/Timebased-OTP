@@ -2,6 +2,7 @@ import requests
 import hmac
 import hashlib
 import time
+import base64
 
 def generate_totp(secret_key):
     interval = int(time.time()) // 30  # TOTP Time Step X is 30 seconds
@@ -17,14 +18,13 @@ shared_secret = (userid + "HENNGECHALLENGE003").encode('utf-8')
 totp_password = generate_totp(shared_secret)
 
 auth_string = f"{userid}:{totp_password}"
+base64_auth_string = base64.b64encode(auth_string.encode('utf-8')).decode('utf-8')
 
 url = "https://api.challenge.hennge.com/challenges/003"
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Basic {userid}:{totp_password}"
+    "Authorization": f"Basic {base64_auth_string}"
 }
-
-print(headers["Authorization"])
 
 payload = {
     "github_url": "https://gist.github.com/mdarshad1000/c9786286b951fae9e2c46a5590d4b02c",
@@ -33,4 +33,4 @@ payload = {
 }
 
 response = requests.post(url, headers=headers, json=payload)
-print(response.status_code)
+print(response.text)
